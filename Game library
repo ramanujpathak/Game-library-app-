@@ -1,0 +1,121 @@
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+
+public class GameLibraryApp extends JFrame {
+    private ArrayList<Game> games = new ArrayList<>();
+    private JTextField titleField, ownershipField, ownerNameField;
+    private JComboBox<String> genreComboBox;
+    private DefaultTableModel tableModel;
+
+    public GameLibraryApp() {
+        setTitle("Game Library");
+        setSize(600, 400);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        JPanel inputPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.insets = new Insets(5, 5, 5, 5);
+
+        JLabel titleLabel = new JLabel("Title:");
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        inputPanel.add(titleLabel, constraints);
+
+        titleField = new JTextField(20);
+        constraints.gridx = 1;
+        constraints.gridy = 0;
+        inputPanel.add(titleField, constraints);
+
+        JLabel genreLabel = new JLabel("Genre:");
+        constraints.gridx = 0;
+        constraints.gridy = 1;
+        inputPanel.add(genreLabel, constraints);
+
+        String[] genres = {"Action", "Adventure", "RPG", "Strategy", "Simulation", "Sports", "Puzzle", "Other"};
+        genreComboBox = new JComboBox<>(genres);
+        constraints.gridx = 1;
+        constraints.gridy = 1;
+        inputPanel.add(genreComboBox, constraints);
+
+        JLabel ownershipLabel = new JLabel("Ownership Status:");
+        constraints.gridx = 0;
+        constraints.gridy = 2;
+        inputPanel.add(ownershipLabel, constraints);
+
+        ownershipField = new JTextField(20);
+        constraints.gridx = 1;
+        constraints.gridy = 2;
+        inputPanel.add(ownershipField, constraints);
+
+        JLabel ownerNameLabel = new JLabel("Owner Name:");
+        constraints.gridx = 0;
+        constraints.gridy = 3;
+        inputPanel.add(ownerNameLabel, constraints);
+
+        ownerNameField = new JTextField(20);
+        constraints.gridx = 1;
+        constraints.gridy = 3;
+        inputPanel.add(ownerNameField, constraints);
+
+        JButton addButton = new JButton("Add Game");
+        addButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addGame();
+            }
+        });
+        constraints.gridx = 0;
+        constraints.gridy = 4;
+        constraints.gridwidth = 2;
+        inputPanel.add(addButton, constraints);
+
+        tableModel = new DefaultTableModel(new String[]{"Title", "Genre", "Ownership Status", "Owner Name"}, 0);
+        JTable table = new JTable(tableModel);
+
+        JScrollPane scrollPane = new JScrollPane(table);
+
+        setLayout(new BorderLayout());
+        add(inputPanel, BorderLayout.NORTH);
+        add(scrollPane, BorderLayout.CENTER);
+    }
+
+    private void addGame() {
+        String title = titleField.getText();
+        String genre = (String) genreComboBox.getSelectedItem();
+        String ownershipStatus = ownershipField.getText();
+        String ownerName = ownerNameField.getText();
+
+        games.add(new Game(title, genre, ownershipStatus, ownerName));
+
+        Object[] rowData = {title, genre, ownershipStatus, ownerName};
+        tableModel.addRow(rowData);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                new GameLibraryApp().setVisible(true);
+            }
+        });
+    }
+
+    private static class Game {
+        private String title;
+        private String genre;
+        private String ownershipStatus;
+        private String ownerName;
+
+        public Game(String title, String genre, String ownershipStatus, String ownerName) {
+            this.title = title;
+            this.genre = genre;
+            this.ownershipStatus = ownershipStatus;
+            this.ownerName = ownerName;
+        }
+    }
+}
